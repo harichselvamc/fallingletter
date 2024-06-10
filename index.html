@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Falling Letters Animation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            background-color: #000;
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+
+        .word {
+            display: flex;
+            font-size: 3em;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .letter {
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+        }
+
+        @keyframes drop1 {
+            0% { top: -100px; opacity: 1; }
+            100% { top: 100vh; opacity: 1; }
+        }
+
+        @keyframes drop2 {
+            0% { top: -100px; left: -50px; opacity: 1; }
+            100% { top: 100vh; left: 50px; opacity: 1; }
+        }
+
+        @keyframes drop3 {
+            0% { top: -100px; transform: rotate(0deg); opacity: 1; }
+            100% { top: 100vh; transform: rotate(360deg); opacity: 1; }
+        }
+
+        @keyframes drop4 {
+            0% { top: -100px; transform: scale(1); opacity: 1; }
+            100% { top: 100vh; transform: scale(1.5); opacity: 1; }
+        }
+
+        @keyframes drop5 {
+            0% { top: -100px; font-size: 1em; opacity: 1; }
+            100% { top: 100vh; font-size: 2em; opacity: 1; }
+        }
+
+        @keyframes drop6 {
+            0% { top: -100px; font-size: 3em; opacity: 1; }
+            100% { top: 100vh; font-size: 1.5em; opacity: 1; }
+        }
+
+        @media (max-width: 600px) {
+            .word {
+                font-size: 2em;
+            }
+
+            @keyframes drop1, @keyframes drop2, @keyframes drop3, @keyframes drop4, @keyframes drop5, @keyframes drop6 {
+                100% { top: 100vh; opacity: 1; }
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="word" id="thanks">Thanks</div>
+        <div class="word" id="sorry">Sorry</div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const words = document.querySelectorAll('.word');
+            const animations = ['drop1', 'drop2', 'drop3', 'drop4', 'drop5', 'drop6'];
+
+            words.forEach((word, wordIndex) => {
+                const letters = word.textContent.split('');
+                word.textContent = '';
+
+                letters.forEach((letter, index) => {
+                    const span = document.createElement('span');
+                    span.textContent = letter;
+                    span.className = 'letter';
+                    const animationName = animations[Math.floor(Math.random() * animations.length)];
+                    span.style.animation = `${animationName} 5s linear ${index * 0.5 + wordIndex * 2}s infinite`;
+                    word.appendChild(span);
+                });
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                const letters = document.querySelectorAll('.letter');
+                letters.forEach(letter => {
+                    const rect = letter.getBoundingClientRect();
+                    const dx = e.clientX - (rect.left + rect.width / 2);
+                    const dy = e.clientY - (rect.top + rect.height / 2);
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const moveX = dx / dist * 10;
+                    const moveY = dy / dist * 10;
+
+                    letter.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                });
+            });
+
+            document.addEventListener('mouseout', () => {
+                const letters = document.querySelectorAll('.letter');
+                letters.forEach(letter => {
+                    letter.style.transform = 'translate(0, 0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
